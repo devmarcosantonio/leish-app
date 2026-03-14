@@ -1,50 +1,74 @@
-# Welcome to your Expo app 👋
+# E-Leish
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo móvel educativo sobre **Leishmaniose**, desenvolvido com React Native e Expo. O objetivo é levar informação acessível sobre a doença à população, com foco no estado do Maranhão.
 
-## Get started
+---
 
-1. Install dependencies
+## Sobre o app
 
-   ```bash
-   npm install
-   ```
+A Leishmaniose é uma doença negligenciada causada por parasitas do gênero *Leishmania*, transmitida pela picada de flebotomíneos. O **E-Leish** reúne informações sobre a doença de forma clara e interativa para usuários de qualquer nível de instrução.
 
-2. Start the app
+### Funcionalidades
 
-   ```bash
-   npx expo start
-   ```
+| Tela | Descrição |
+|---|---|
+| **O que é?** | Explicação sobre a doença, agente causador e formas de transmissão |
+| **Como identificar** | Sintomas, tipos (cutânea e visceral) e orientações sobre diagnóstico |
+| **Prevenção** | Medidas preventivas individuais e coletivas |
+| **Mapa** | Mapa interativo dos municípios do Maranhão com polígonos navegáveis (zoom e pan) |
+| **Quiz** | Perguntas de múltipla escolha para testar o conhecimento sobre a doença, com pontuação salva localmente |
+| **Contatos** | Canais de contato e serviços de saúde relevantes |
+| **Fórum** | Espaço para discussão e troca de experiências |
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Tecnologias
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- [Expo](https://expo.dev) SDK 54
+- [React Native](https://reactnative.dev) 0.81
+- [Expo Router](https://expo.github.io/router) — navegação baseada em arquivos
+- [react-native-svg](https://github.com/software-mansion/react-native-svg) — renderização do mapa em SVG
+- [react-native-gesture-handler](https://docs.swmansion.com/react-native-gesture-handler/) + [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/) — gestos de zoom e pan
+- [expo-secure-store](https://docs.expo.dev/sdk/securestore/) — armazenamento local seguro da pontuação do quiz
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## Como executar
+
+### Pré-requisitos
+
+- Node.js 18+
+- Android Studio (para emulador Android) ou dispositivo físico com USB debug
+- JDK 17
+
+### Instalação
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Desenvolvimento (Metro com cache limpo)
 
-## Learn more
+```bash
+npx expo start -c
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### Build nativo Android
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Necessário ao adicionar/atualizar dependências nativas (como `react-native-svg`):
 
-## Join the community
+```bash
+npx expo run:android
+```
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Estrutura principal
+
+```
+app/          # Telas (roteamento baseado em arquivos)
+assets/       # JSONs geográficos, perguntas do quiz e imagens
+components/   # Componentes reutilizáveis
+constants/    # Tema de cores
+hooks/        # Hooks customizados
+```

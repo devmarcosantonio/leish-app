@@ -1,0 +1,277 @@
+[
+  {
+    "id": 1,
+    "pergunta": "O que causa a leishmaniose?",
+    "opcoes": [
+      "Vírus",
+      "Bactéria",
+      "Parasita protozoário do gênero Leishmania",
+      "Fungo"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 2,
+    "pergunta": "A leishmaniose é considerada:",
+    "opcoes": [
+      "Doença genética",
+      "Doença respiratória",
+      "Zoonose",
+      "Doença alimentar"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 3,
+    "pergunta": "Qual é o nome popular do inseto vetor?",
+    "opcoes": [
+      "Pernilongo",
+      "Mosquito-palha",
+      "Borrachudo",
+      "Muriçoca"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 4,
+    "pergunta": "O nome científico do vetor é:",
+    "opcoes": [
+      "Anopheles",
+      "Aedes",
+      "Flebotomíneo",
+      "Culex"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 5,
+    "pergunta": "O Brasil possui casos de leishmaniose?",
+    "opcoes": [
+      "Não",
+      "Sim, em várias regiões do país",
+      "Apenas no Sul",
+      "Apenas em capitais"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 6,
+    "pergunta": "A leishmaniose pode afetar:",
+    "opcoes": [
+      "Apenas animais",
+      "Apenas humanos",
+      "Humanos e animais",
+      "Apenas idosos"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 7,
+    "pergunta": "A leishmaniose tem tratamento?",
+    "opcoes": [
+      "Não",
+      "Sim, com acompanhamento de saúde",
+      "Apenas natural",
+      "Apenas cirúrgico"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 8,
+    "pergunta": "Se não tratada, a doença pode:",
+    "opcoes": [
+      "Não causar problemas",
+      "Desaparecer sozinha",
+      "Evoluir para formas graves",
+      "Virar gripe"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 9,
+    "pergunta": "A transmissão ocorre principalmente por:",
+    "opcoes": [
+      "Contato direto",
+      "Água contaminada",
+      "Picada da fêmea do flebotomíneo infectada",
+      "Alimentos"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 10,
+    "pergunta": "Qual animal é importante reservatório urbano da leishmaniose visceral?",
+    "opcoes": [
+      "Gato",
+      "Cão",
+      "Galinha",
+      "Cavalo"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 11,
+    "pergunta": "A forma que afeta pele e mucosas é chamada de:",
+    "opcoes": [
+      "Leishmaniose cutânea",
+      "Leishmaniose dermatológica",
+      "Leishmaniose tegumentar americana",
+      "Leishmaniose externa"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 12,
+    "pergunta": "A forma que compromete órgãos internos é chamada de:",
+    "opcoes": [
+      "Leishmaniose pulmonar",
+      "Leishmaniose intestinal",
+      "Leishmaniose visceral",
+      "Leishmaniose sistêmica"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 13,
+    "pergunta": "Um sinal comum da leishmaniose tegumentar é:",
+    "opcoes": [
+      "Dor abdominal",
+      "Tosse",
+      "Feridas na pele que não cicatrizam",
+      "Dor de cabeça"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 14,
+    "pergunta": "A leishmaniose visceral pode causar:",
+    "opcoes": [
+      "Febre prolongada",
+      "Aumento do fígado e do baço",
+      "Emagrecimento",
+      "Todas as alternativas"
+    ],
+    "respostaCorreta": 3
+  },
+  {
+    "id": 15,
+    "pergunta": "A pessoa infectada transmite diretamente a doença?",
+    "opcoes": [
+      "Sim",
+      "Não, a transmissão depende do vetor",
+      "Apenas pelo toque",
+      "Pelo ar"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 16,
+    "pergunta": "Somente qual inseto transmite a leishmaniose?",
+    "opcoes": [
+      "Macho do flebotomíneo",
+      "Fêmea do flebotomíneo",
+      "Qualquer mosquito",
+      "Mosca doméstica"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 17,
+    "pergunta": "O flebotomíneo costuma ter maior atividade:",
+    "opcoes": [
+      "Pela manhã",
+      "Ao meio-dia",
+      "No entardecer e à noite",
+      "Apenas na madrugada"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 18,
+    "pergunta": "Uma medida eficaz de prevenção é:",
+    "opcoes": [
+      "Uso de repelente",
+      "Limpeza do ambiente",
+      "Uso de telas",
+      "Todas as alternativas"
+    ],
+    "respostaCorreta": 3
+  },
+  {
+    "id": 19,
+    "pergunta": "Manter quintais limpos ajuda porque:",
+    "opcoes": [
+      "Afasta o sol",
+      "Reduz locais favoráveis ao vetor",
+      "Diminui a chuva",
+      "Reduz o calor"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 20,
+    "pergunta": "O uso de telas em portas e janelas:",
+    "opcoes": [
+      "Não interfere",
+      "Ajuda a reduzir a entrada do vetor",
+      "Aumenta mosquitos",
+      "Não é recomendado"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 21,
+    "pergunta": "Em caso de suspeita da doença, a pessoa deve:",
+    "opcoes": [
+      "Esperar melhorar",
+      "Tomar remédio por conta própria",
+      "Procurar unidade de saúde",
+      "Usar apenas remédios caseiros"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 22,
+    "pergunta": "O diagnóstico correto deve ser feito:",
+    "opcoes": [
+      "Pela internet",
+      "Em casa",
+      "Por profissionais de saúde",
+      "Na farmácia"
+    ],
+    "respostaCorreta": 2
+  },
+  {
+    "id": 23,
+    "pergunta": "O tratamento deve ser:",
+    "opcoes": [
+      "Interrompido ao melhorar",
+      "Acompanhado por profissionais de saúde",
+      "Apenas natural",
+      "Sem orientação"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 24,
+    "pergunta": "Animais domésticos também devem receber acompanhamento veterinário porque:",
+    "opcoes": [
+      "Não interfere na doença",
+      "Podem participar do ciclo da transmissão",
+      "Apenas para vacina comum",
+      "Não é importante"
+    ],
+    "respostaCorreta": 1
+  },
+  {
+    "id": 25,
+    "pergunta": "A prevenção da leishmaniose depende principalmente de:",
+    "opcoes": [
+      "Governo apenas",
+      "Médicos apenas",
+      "Ações conjuntas da população e do poder público",
+      "Apenas dos hospitais"
+    ],
+    "respostaCorreta": 2
+  }
+]

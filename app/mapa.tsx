@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { LayoutChangeEvent, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
@@ -18,6 +18,9 @@ export default function Mapa() {
     const router = useRouter();
     const [selectedMunicipio, setSelectedMunicipio] = useState<string | null>(null);
     const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+    const [anoSelecionado, setAnoSelecionado] = useState<number>(2025);
+
+    const anos = [2021, 2022, 2023, 2024, 2025];
 
     // Zoom + pan
     const scale = useSharedValue(1);
@@ -184,6 +187,27 @@ export default function Mapa() {
                     <Text style={styles.subtitle}>{selectedMunicipio}</Text>
                 )}
             </View>
+            <View style={styles.yearSelector}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.yearScrollContent}>
+                    {anos.map((ano) => (
+                        <TouchableOpacity
+                            key={ano}
+                            style={[
+                                styles.yearPill,
+                                anoSelecionado === ano && styles.yearPillActive,
+                            ]}
+                            onPress={() => setAnoSelecionado(ano)}
+                        >
+                            <Text style={[
+                                styles.yearPillText,
+                                anoSelecionado === ano && styles.yearPillTextActive,
+                            ]}>
+                                {ano}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
             <View style={styles.mapContainer} onLayout={handleCanvasLayout}>
                 <GestureDetector gesture={composed}>
                     <Animated.View style={[StyleSheet.absoluteFill, animatedStyle]}>
@@ -244,5 +268,34 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#ECE7DF",
         overflow: "hidden",
+    },
+    yearSelector: {
+        backgroundColor: "#F5F2ED",
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#DDD9D3",
+    },
+    yearScrollContent: {
+        paddingHorizontal: 16,
+        gap: 8,
+    },
+    yearPill: {
+        paddingHorizontal: 18,
+        paddingVertical: 7,
+        borderRadius: 20,
+        borderWidth: 1.5,
+        borderColor: "#2C5F7E",
+        backgroundColor: "transparent",
+    },
+    yearPillActive: {
+        backgroundColor: "#2C5F7E",
+    },
+    yearPillText: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: "#2C5F7E",
+    },
+    yearPillTextActive: {
+        color: "#F4D8A7",
     },
 });

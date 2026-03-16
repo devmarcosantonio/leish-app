@@ -256,6 +256,19 @@ export default function Mapa() {
         return "#D8D3CA";
     };
 
+    const getEscalaTextColor = (escala?: string) => {
+        if (!escala) {
+            return "#2C5F7E";
+        }
+
+        const escalaNormalizada = escala.toLowerCase();
+        if (escalaNormalizada === "alta" || escalaNormalizada === "muito alta") {
+            return "#FFFFFF";
+        }
+
+        return "#2C5F7E";
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -362,14 +375,34 @@ export default function Mapa() {
                                     <Text style={styles.infoLine}>Casos: {municipioSelecionado.anoData.Tegumentar.CASOS}</Text>
                                     <Text style={styles.infoLine}>Populacao: {municipioSelecionado.anoData.Tegumentar.POPULACAO}</Text>
                                     <Text style={styles.infoLine}>Incidencia: {municipioSelecionado.anoData.Tegumentar.INCIDENCIA}</Text>
-                                    <Text style={styles.infoBadge}>{municipioSelecionado.anoData.Tegumentar.ESCALA}</Text>
+                                    <Text
+                                        style={[
+                                            styles.infoBadge,
+                                            {
+                                                backgroundColor: getEscalaColor(municipioSelecionado.anoData.Tegumentar.ESCALA),
+                                                color: getEscalaTextColor(municipioSelecionado.anoData.Tegumentar.ESCALA),
+                                            },
+                                        ]}
+                                    >
+                                        {municipioSelecionado.anoData.Tegumentar.ESCALA}
+                                    </Text>
                                 </View>
                                 <View style={styles.infoCard}>
                                     <Text style={styles.infoCardTitle}>Viceral</Text>
                                     <Text style={styles.infoLine}>Casos: {municipioSelecionado.anoData.Viceral.CASOS}</Text>
                                     <Text style={styles.infoLine}>Populacao: {municipioSelecionado.anoData.Viceral.POPULACAO}</Text>
                                     <Text style={styles.infoLine}>Incidencia: {municipioSelecionado.anoData.Viceral.INCIDENCIA}</Text>
-                                    <Text style={styles.infoBadge}>{municipioSelecionado.anoData.Viceral.ESCALA}</Text>
+                                    <Text
+                                        style={[
+                                            styles.infoBadge,
+                                            {
+                                                backgroundColor: getEscalaColor(municipioSelecionado.anoData.Viceral.ESCALA),
+                                                color: getEscalaTextColor(municipioSelecionado.anoData.Viceral.ESCALA),
+                                            },
+                                        ]}
+                                    >
+                                        {municipioSelecionado.anoData.Viceral.ESCALA}
+                                    </Text>
                                 </View>
                             </View>
                         ) : (

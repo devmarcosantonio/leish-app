@@ -1,6 +1,6 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
-import { Award, HelpCircle, LogOut, Map, MessageCircle, Phone, Search, Shield, Trophy } from "lucide-react-native";
+import { Award, HelpCircle, LogOut, Map, Phone, Search, Shield, Trophy } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -33,7 +33,6 @@ export default function Home() {
         { id: 4, title: "Mapa", Icon: Map, color: "#2C5F7E", route: "mapa" },
         { id: 5, title: "Quiz", Icon: Award, color: "#B87A5F", route: "quiz" },
         { id: 6, title: "Contatos", Icon: Phone, color: "#E8A55C", route: "contatos" },
-        { id: 7, title: "Fórum", Icon: MessageCircle, color: "#D47254", route: "forum" },
     ];
 
     const handlePress = (route: string) => {
@@ -56,7 +55,7 @@ export default function Home() {
             <View style={styles.header}>
                 <View style={styles.headerContent}>
                     <View>
-                        <Text style={styles.title}>E-Leish</Text>
+                        <Text style={styles.title}>E-LEISH</Text>
                         <Text style={styles.subtitle}>Informações sobre Leishmaniose</Text>
                     </View>
                     <TouchableOpacity
@@ -136,7 +135,10 @@ export default function Home() {
                         {quickAccessItems.map((item) => (
                             <TouchableOpacity
                                 key={item.id}
-                                style={styles.quickAccessCard}
+                                style={[
+                                    styles.quickAccessCard,
+                                    item.title === "Contatos" && styles.quickAccessCardFull,
+                                ]}
                                 onPress={() => handlePress(item.route)}
                                 activeOpacity={0.8}
                             >
@@ -271,6 +273,9 @@ const styles = StyleSheet.create({
         elevation: 3,
         minHeight: 120,
         justifyContent: "center",
+    },
+    quickAccessCardFull: {
+        width: "100%",
     },
     quickIconBg: {
         width: 60,

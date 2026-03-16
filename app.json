@@ -4,7 +4,7 @@
     "slug": "leish-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icone/icone.jpeg",
     "scheme": "leishmobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -36,7 +36,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/icone/icone.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",

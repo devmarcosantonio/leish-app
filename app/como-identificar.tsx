@@ -1,6 +1,136 @@
+import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
-import { Activity, AlertCircle, ArrowLeft, Eye, Stethoscope, Thermometer } from "lucide-react-native";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Activity,
+    AlertCircle,
+    ArrowLeft,
+    Eye,
+    EyeOff,
+    ShieldAlert,
+    Stethoscope,
+    Thermometer,
+} from "lucide-react-native";
+import { useState } from "react";
+import {
+    Image,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
+
+type SensitiveImageProps = {
+    source: any;
+    imageStyle: any;
+};
+
+function SensitiveImage({ source, imageStyle }: SensitiveImageProps) {
+    const [revealed, setRevealed] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const handleConfirm = () => {
+        setModalVisible(false);
+        setRevealed(true);
+    };
+
+    return (
+        <>
+            <View style={styles.sensitiveImageWrapper}>
+                <Image source={source} style={imageStyle} resizeMode="cover" />
+
+                {!revealed && (
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={[
+                            StyleSheet.absoluteFillObject,
+                            {
+                                justifyContent: "center",
+                                alignItems: "center",
+                                zIndex: 2,
+                            },
+                        ]}
+                        onPress={() => setModalVisible(true)}
+                    >
+                        <BlurView
+                            intensity={900}
+                            tint="light"
+                            style={StyleSheet.absoluteFillObject}
+                        />
+
+                        <View
+                            style={{
+                                position: "absolute",
+                                width: "100%",
+                                alignItems: "center",
+                                padding: 24,
+                            }}
+                        >
+                            {/* <View style={styles.sensitiveBadge}>
+                                <ShieldAlert size={20} color="#FFFFFF" strokeWidth={2.2} />
+                                <Text style={styles.sensitiveBadgeText}>Conteúdo sensível</Text>
+                            </View> */}
+
+                            <EyeOff size={34} color="#FFFFFF" strokeWidth={2.2} />
+
+                            <Text style={styles.sensitiveTitle}>Imagem censurada</Text>
+
+                            <Text style={styles.sensitiveText}>
+                                Esta imagem pode ser sensível. Toque para escolher se deseja
+                                visualizar.
+                            </Text>
+
+                            {/* <View style={styles.sensitiveButton}>
+                                <Eye size={18} color="#2C5F7E" strokeWidth={2.2} />
+                                <Text style={styles.sensitiveButtonText}>Ver imagem</Text>
+                            </View> */}
+                        </View>
+                    </TouchableOpacity>
+                )}
+            </View>
+
+            <Modal
+                visible={modalVisible}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalBackdrop}>
+                    <View style={styles.modalCard}>
+                        <View style={styles.modalIcon}>
+                            <ShieldAlert size={28} color="#C24229" strokeWidth={2.3} />
+                        </View>
+
+                        <Text style={styles.modalTitle}>Conteúdo sensível</Text>
+                        <Text style={styles.modalDescription}>
+                            Esta imagem pode conter conteúdo visual sensível relacionado à
+                            doença. Deseja realmente visualizar?
+                        </Text>
+
+                        <View style={styles.modalActions}>
+                            <TouchableOpacity
+                                style={styles.modalSecondaryButton}
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Text style={styles.modalSecondaryButtonText}>Cancelar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.modalPrimaryButton}
+                                onPress={handleConfirm}
+                            >
+                                <Text style={styles.modalPrimaryButtonText}>
+                                    Sim, visualizar
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        </>
+    );
+}
 
 export default function ComoIdentificar() {
     const router = useRouter();
@@ -8,35 +138,41 @@ export default function ComoIdentificar() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.push("/home")} style={styles.backButton}>
+                <TouchableOpacity
+                    onPress={() => router.push("/home")}
+                    style={styles.backButton}
+                >
                     <ArrowLeft size={24} color="#F4D8A7" strokeWidth={2.5} />
                     <Text style={styles.backText}>Voltar</Text>
                 </TouchableOpacity>
                 <Text style={styles.title}>Como Identificar a Leishmaniose</Text>
             </View>
 
-            <ScrollView
-                style={styles.scrollView}
-                showsVerticalScrollIndicator={false}
-            >
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
-                    {/* Intro */}
                     <View style={styles.introCard}>
-                        <Text style={styles.introTitle}>Identifique os Sintomas e Saiba Quando Procurar Ajuda</Text>
+                        <Text style={styles.introTitle}>
+                            Identifique os Sintomas e Saiba Quando Procurar Ajuda
+                        </Text>
                         <Text style={styles.introText}>
-                            Reconhecer os sintomas precocemente é essencial para um tratamento eficaz. Conheça as principais formas clínicas da leishmaniose e seus sintomas característicos.
+                            Reconhecer os sintomas precocemente é essencial para um tratamento
+                            eficaz. Conheça as principais formas clínicas da leishmaniose e
+                            seus sintomas característicos.
                         </Text>
                     </View>
 
-                    <Text style={styles.mainSectionTitle}>Principais Formas Clínicas da Leishmaniose</Text>
+                    <Text style={styles.mainSectionTitle}>
+                        Principais Formas Clínicas da Leishmaniose
+                    </Text>
 
-                    {/* Leishmaniose Cutânea */}
                     <View style={styles.diseaseCard}>
                         <View style={styles.diseaseHeader}>
                             <View style={styles.numberBadge}>
                                 <Text style={styles.numberText}>1</Text>
                             </View>
-                            <Text style={styles.diseaseTitle}>Leishmaniose Cutânea (LC)</Text>
+                            <Text style={styles.diseaseTitle}>
+                                Leishmaniose Cutânea (LC)
+                            </Text>
                         </View>
 
                         <Text style={styles.diseaseDescription}>
@@ -50,7 +186,8 @@ export default function ComoIdentificar() {
                             <View style={styles.symptomContent}>
                                 <Text style={styles.symptomLabel}>Lesões ulceradas</Text>
                                 <Text style={styles.symptomText}>
-                                    Surgem como pequenas bolhas que evoluem para úlceras abertas com bordas elevadas
+                                    Surgem como pequenas bolhas que evoluem para úlceras abertas
+                                    com bordas elevadas
                                 </Text>
                             </View>
                         </View>
@@ -60,7 +197,8 @@ export default function ComoIdentificar() {
                             <View style={styles.symptomContent}>
                                 <Text style={styles.symptomLabel}>Localização das lesões</Text>
                                 <Text style={styles.symptomText}>
-                                    Geralmente aparecem em áreas expostas, como braços, pernas e rosto
+                                    Geralmente aparecem em áreas expostas, como braços, pernas e
+                                    rosto
                                 </Text>
                             </View>
                         </View>
@@ -80,22 +218,20 @@ export default function ComoIdentificar() {
                             <View style={styles.symptomContent}>
                                 <Text style={styles.symptomLabel}>Cicatrização lenta</Text>
                                 <Text style={styles.symptomText}>
-                                    As feridas demoram a curar, podendo deixar cicatrizes permanentes
+                                    As feridas demoram a curar, podendo deixar cicatrizes
+                                    permanentes
                                 </Text>
                             </View>
                         </View>
 
-                        <View style={{ overflow: "hidden", borderRadius: 10, marginTop: 12 }}>
-                            <Image
+                        <View style={styles.imageContainer}>
+                            <SensitiveImage
                                 source={require("../assets/images/aba-como-identificar/5.png")}
-                                style={{ width: "100%", height: 500, marginTop: -200, marginBottom: -150 }}
-                                resizeMode="cover"
+                                imageStyle={styles.imageCutanea}
                             />
                         </View>
                     </View>
 
-
-                    {/* Leishmaniose Mucosa */}
                     <View style={styles.diseaseCard}>
                         <View style={styles.diseaseHeader}>
                             <View style={styles.numberBadge}>
@@ -105,7 +241,8 @@ export default function ComoIdentificar() {
                         </View>
 
                         <Text style={styles.diseaseDescription}>
-                            Forma mais rara e grave, que afeta as mucosas do nariz, boca e faringe.
+                            Forma mais rara e grave, que afeta as mucosas do nariz, boca e
+                            faringe.
                         </Text>
 
                         <Text style={styles.symptomsTitle}>Principais sintomas:</Text>
@@ -123,7 +260,9 @@ export default function ComoIdentificar() {
                         <View style={styles.symptomItem}>
                             <Text style={styles.symptomBullet}>•</Text>
                             <View style={styles.symptomContent}>
-                                <Text style={styles.symptomLabel}>Congestão nasal e sangramentos</Text>
+                                <Text style={styles.symptomLabel}>
+                                    Congestão nasal e sangramentos
+                                </Text>
                                 <Text style={styles.symptomText}>
                                     Podem ocorrer no início, seguidos de dificuldades respiratórias
                                 </Text>
@@ -135,31 +274,33 @@ export default function ComoIdentificar() {
                             <View style={styles.symptomContent}>
                                 <Text style={styles.symptomLabel}>Destruição das mucosas</Text>
                                 <Text style={styles.symptomText}>
-                                    Sem tratamento, pode causar deformidades faciais e dificuldade para respirar e engolir
+                                    Sem tratamento, pode causar deformidades faciais e dificuldade
+                                    para respirar e engolir
                                 </Text>
                             </View>
                         </View>
 
-                        <View style={{ overflow: "hidden", borderRadius: 10, marginTop: 12 }}>
-                            <Image
+                        <View style={styles.imageContainer}>
+                            <SensitiveImage
                                 source={require("../assets/images/aba-como-identificar/6.png")}
-                                style={{ width: "100%", height: 500, marginTop: -200, marginBottom: -150 }}
-                                resizeMode="cover"
+                                imageStyle={styles.imageMucosa}
                             />
                         </View>
                     </View>
 
-                    {/* Leishmaniose Cutânea Difusa */}
                     <View style={styles.diseaseCard}>
                         <View style={styles.diseaseHeader}>
                             <View style={styles.numberBadge}>
                                 <Text style={styles.numberText}>3</Text>
                             </View>
-                            <Text style={styles.diseaseTitle}>Leishmaniose Cutânea Difusa (LCD)</Text>
+                            <Text style={styles.diseaseTitle}>
+                                Leishmaniose Cutânea Difusa (LCD)
+                            </Text>
                         </View>
 
                         <Text style={styles.diseaseDescription}>
-                            Caracterizada por múltiplas lesões na pele, sem cicatrização e com distribuição extensa.
+                            Caracterizada por múltiplas lesões na pele, sem cicatrização e com
+                            distribuição extensa.
                         </Text>
 
                         <Text style={styles.symptomsTitle}>Principais sintomas:</Text>
@@ -177,7 +318,9 @@ export default function ComoIdentificar() {
                         <View style={styles.symptomItem}>
                             <Text style={styles.symptomBullet}>•</Text>
                             <View style={styles.symptomContent}>
-                                <Text style={styles.symptomLabel}>Dificuldade de cicatrização</Text>
+                                <Text style={styles.symptomLabel}>
+                                    Dificuldade de cicatrização
+                                </Text>
                                 <Text style={styles.symptomText}>
                                     As lesões permanecem por longos períodos sem cura
                                 </Text>
@@ -187,33 +330,36 @@ export default function ComoIdentificar() {
                         <View style={styles.symptomItem}>
                             <Text style={styles.symptomBullet}>•</Text>
                             <View style={styles.symptomContent}>
-                                <Text style={styles.symptomLabel}>Lesões sem bordas elevadas</Text>
+                                <Text style={styles.symptomLabel}>
+                                    Lesões sem bordas elevadas
+                                </Text>
                                 <Text style={styles.symptomText}>
                                     Diferente da forma ulcerada, as lesões podem ser mais rasas
                                 </Text>
                             </View>
                         </View>
 
-                        <View style={{ overflow: "hidden", borderRadius: 10, marginTop: 12 }}>
-                            <Image
+                        <View style={styles.imageContainer}>
+                            <SensitiveImage
                                 source={require("../assets/images/aba-como-identificar/7.png")}
-                                style={{ width: "100%", height: 500, marginTop: -180, marginBottom: -150 }}
-                                resizeMode="cover"
+                                imageStyle={styles.imageDifusa}
                             />
                         </View>
                     </View>
 
-                    {/* Leishmaniose Disseminada */}
                     <View style={styles.diseaseCard}>
                         <View style={styles.diseaseHeader}>
                             <View style={styles.numberBadge}>
                                 <Text style={styles.numberText}>4</Text>
                             </View>
-                            <Text style={styles.diseaseTitle}>Leishmaniose Disseminada (LD)</Text>
+                            <Text style={styles.diseaseTitle}>
+                                Leishmaniose Disseminada (LD)
+                            </Text>
                         </View>
 
                         <Text style={styles.diseaseDescription}>
-                            Forma rara que envolve a propagação do parasita para várias áreas da pele e órgãos internos.
+                            Forma rara que envolve a propagação do parasita para várias áreas
+                            da pele e órgãos internos.
                         </Text>
 
                         <Text style={styles.symptomsTitle}>Principais sintomas:</Text>
@@ -221,7 +367,9 @@ export default function ComoIdentificar() {
                         <View style={styles.symptomItem}>
                             <Text style={styles.symptomBullet}>•</Text>
                             <View style={styles.symptomContent}>
-                                <Text style={styles.symptomLabel}>Lesões em várias partes do corpo</Text>
+                                <Text style={styles.symptomLabel}>
+                                    Lesões em várias partes do corpo
+                                </Text>
                                 <Text style={styles.symptomText}>
                                     Grande quantidade de feridas que se espalham para outras áreas
                                 </Text>
@@ -231,7 +379,9 @@ export default function ComoIdentificar() {
                         <View style={styles.symptomItem}>
                             <Text style={styles.symptomBullet}>•</Text>
                             <View style={styles.symptomContent}>
-                                <Text style={styles.symptomLabel}>Comprometimento do sistema imunológico</Text>
+                                <Text style={styles.symptomLabel}>
+                                    Comprometimento do sistema imunológico
+                                </Text>
                                 <Text style={styles.symptomText}>
                                     Pode afetar sistemas hepático e sanguíneo
                                 </Text>
@@ -248,27 +398,22 @@ export default function ComoIdentificar() {
                             </View>
                         </View>
 
-                        <View style={{ overflow: "hidden", borderRadius: 10, marginTop: 12 }}>
-                            <Image
+                        <View style={styles.imageContainer}>
+                            <SensitiveImage
                                 source={require("../assets/images/aba-como-identificar/8.png")}
-                                style={{ width: "100%", height: 500, marginTop: -180, marginBottom: -150 }}
-                                resizeMode="cover"
+                                imageStyle={styles.imageDisseminada}
                             />
                         </View>
                     </View>
 
-                    {/* Leishmaniose Visceral */}
                     <View style={styles.visceralCard}>
                         <View style={styles.diseaseHeader}>
                             <View style={styles.numberBadgeDanger}>
                                 <Text style={styles.numberTextDanger}>5</Text>
                             </View>
-                            <Text style={styles.diseaseTitleDanger}>Leishmaniose Visceral (Calazar)</Text>
-                        </View>
-
-                        <View style={styles.dangerBadge}>
-                            <AlertCircle size={18} color="#991B1B" strokeWidth={2.5} />
-                            <Text style={styles.dangerText}>Forma mais grave e potencialmente fatal</Text>
+                            <Text style={styles.diseaseTitleDanger}>
+                                Leishmaniose Visceral (Calazar)
+                            </Text>
                         </View>
 
                         <Text style={styles.diseaseDescription}>
@@ -327,25 +472,24 @@ export default function ComoIdentificar() {
                             </View>
                         </View>
 
-                        <View style={{ overflow: "hidden", borderRadius: 10, marginTop: 12 }}>
-                            <Image
+                        <View style={styles.imageContainer}>
+                            <SensitiveImage
                                 source={require("../assets/images/aba-como-identificar/4.png")}
-                                style={{ width: "100%", height: 500, marginTop: -150, marginBottom: -150 }}
-                                resizeMode="cover"
+                                imageStyle={styles.imageVisceral}
                             />
                         </View>
                     </View>
 
-                    {/* Alerta */}
                     <View style={styles.urgentAlert}>
                         <AlertCircle size={32} color="#991B1B" strokeWidth={2.5} />
                         <Text style={styles.urgentTitle}>Procure ajuda imediatamente!</Text>
                         <Text style={styles.urgentText}>
-                            Se você apresentar algum desses sintomas, procure um posto de saúde imediatamente. O diagnóstico precoce é crucial para um tratamento eficaz.
+                            Se você apresentar algum desses sintomas, procure um posto de saúde
+                            imediatamente. O diagnóstico precoce é crucial para um tratamento
+                            eficaz.
                         </Text>
                     </View>
 
-                    {/* Diagnóstico */}
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
                             <View style={styles.iconBadge}>
@@ -355,7 +499,8 @@ export default function ComoIdentificar() {
                         </View>
 
                         <Text style={styles.sectionDescription}>
-                            Para o diagnóstico de leishmaniose, é essencial a realização de exames laboratoriais e clínicos:
+                            Para o diagnóstico de leishmaniose, é essencial a realização de
+                            exames laboratoriais e clínicos:
                         </Text>
 
                         <View style={styles.examCard}>
@@ -379,10 +524,10 @@ export default function ComoIdentificar() {
                             </Text>
                         </View>
 
-                        <View style={{ overflow: "hidden", borderRadius: 10, marginTop: 12 }}>
+                        <View style={styles.imageContainer}>
                             <Image
                                 source={require("../assets/images/aba-como-identificar/9.png")}
-                                style={{ width: "100%", height: 500, marginTop: -200, marginBottom: -150 }}
+                                style={styles.imageDiagnostico}
                                 resizeMode="cover"
                             />
                         </View>
@@ -537,21 +682,6 @@ const styles = StyleSheet.create({
         lineHeight: 23,
         marginBottom: 16,
     },
-    dangerBadge: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#FEE2E2",
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 12,
-        gap: 8,
-    },
-    dangerText: {
-        fontSize: 14,
-        fontWeight: "700",
-        color: "#991B1B",
-        flex: 1,
-    },
     symptomsTitle: {
         fontSize: 16,
         fontWeight: "700",
@@ -672,5 +802,188 @@ const styles = StyleSheet.create({
     },
     bottomPadding: {
         height: 40,
+    },
+
+    imageContainer: {
+        overflow: "hidden",
+        borderRadius: 10,
+        marginTop: 12,
+    },
+
+    imageCutanea: {
+        width: "100%",
+        height: 500,
+        marginTop: -200,
+        marginBottom: -150,
+    },
+    imageMucosa: {
+        width: "100%",
+        height: 500,
+        marginTop: -200,
+        marginBottom: -150,
+    },
+    imageDifusa: {
+        width: "100%",
+        height: 500,
+        marginTop: -180,
+        marginBottom: -150,
+    },
+    imageDisseminada: {
+        width: "100%",
+        height: 500,
+        marginTop: -180,
+        marginBottom: -150,
+    },
+    imageVisceral: {
+        width: "100%",
+        height: 500,
+        marginTop: -150,
+        marginBottom: -150,
+    },
+    imageDiagnostico: {
+        width: "100%",
+        height: 500,
+        marginTop: -200,
+        marginBottom: -150,
+    },
+
+    sensitiveImageWrapper: {
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: 10,
+    },
+    sensitiveOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    sensitiveDarkLayer: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: "rgba(0, 0, 0, 0.60)",
+    },
+    sensitiveContent: {
+        alignItems: "center",
+        justifyContent: "center",
+        paddingHorizontal: 24,
+        zIndex: 2,
+    },
+    sensitiveBadge: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        backgroundColor: "rgba(194, 66, 41, 0.95)",
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderRadius: 999,
+        marginBottom: 16,
+    },
+    sensitiveBadgeText: {
+        color: "#FFFFFF",
+        fontSize: 13,
+        fontWeight: "800",
+    },
+    sensitiveTitle: {
+        marginTop: 12,
+        fontSize: 20,
+        fontWeight: "800",
+        color: "#888888",
+        textAlign: "center",
+    },
+    sensitiveText: {
+        marginTop: 8,
+        fontSize: 14,
+        lineHeight: 21,
+        color: "#888888",
+        textAlign: "center",
+        maxWidth: 280,
+    },
+    sensitiveButton: {
+        marginTop: 18,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        backgroundColor: "#F4D8A7",
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 999,
+    },
+    sensitiveButtonText: {
+        color: "#2C5F7E",
+        fontSize: 14,
+        fontWeight: "800",
+    },
+
+    modalBackdrop: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.55)",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 24,
+    },
+    modalCard: {
+        width: "100%",
+        maxWidth: 380,
+        backgroundColor: "#FFFFFF",
+        borderRadius: 22,
+        padding: 24,
+    },
+    modalIcon: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: "#FEE2E2",
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        marginBottom: 14,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: "800",
+        color: "#1F2937",
+        textAlign: "center",
+        marginBottom: 10,
+    },
+    modalDescription: {
+        fontSize: 15,
+        color: "#4B5563",
+        lineHeight: 23,
+        textAlign: "center",
+        marginBottom: 22,
+    },
+    modalActions: {
+        flexDirection: "row",
+        gap: 12,
+    },
+    modalSecondaryButton: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: "#D1D5DB",
+        borderRadius: 14,
+        paddingVertical: 14,
+        alignItems: "center",
+    },
+    modalSecondaryButtonText: {
+        color: "#374151",
+        fontSize: 15,
+        fontWeight: "700",
+    },
+    modalPrimaryButton: {
+        flex: 1,
+        backgroundColor: "#C24229",
+        borderRadius: 14,
+        paddingVertical: 14,
+        alignItems: "center",
+    },
+    modalPrimaryButtonText: {
+        color: "#FFFFFF",
+        fontSize: 15,
+        fontWeight: "800",
+    },
+
+    heavyBlurOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: "rgba(44,95,126,0.88)", // Mais opaco para desfoque mais forte
+        zIndex: 3,
     },
 });

@@ -4,6 +4,7 @@ import { LayoutChangeEvent, ScrollView, StyleSheet, Text, TouchableOpacity, View
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
+import dadosPorMunicipio from "../assets/aba-mapa/dados_por_municipio.json";
 import municipiosMaranhao from "../assets/aba-mapa/geojs-21-mun.json";
 
 type Point = { latitude: number; longitude: number };
@@ -14,11 +15,31 @@ type MunicipioShape = {
     rings: Point[][];
 };
 
+type DoencaData = {
+    CASOS: number;
+    POPULACAO: number;
+    INCIDENCIA: number;
+    ESCALA: string;
+};
+
+type AnoData = {
+    Tegumentar: DoencaData;
+    Viceral: DoencaData;
+};
+
+type MunicipioData = {
+    NOME_MUNICIPIO: string;
+    [year: string]: AnoData | string;
+};
+
+type IncidenciaTipo = "Tegumentar" | "Viceral";
+
 export default function Mapa() {
     const router = useRouter();
-    const [selectedMunicipio, setSelectedMunicipio] = useState<string | null>(null);
+    const [selectedMunicipioId, setSelectedMunicipioId] = useState<string | null>(null);
     const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
     const [anoSelecionado, setAnoSelecionado] = useState<number>(2025);
+    const [incidenciaTipo, setIncidenciaTipo] = useState<IncidenciaTipo>("Tegumentar");
 
     const anos = [2021, 2022, 2023, 2024, 2025];
 
@@ -96,6 +117,52 @@ export default function Mapa() {
             })
             .filter((municipio) => municipio.rings.length > 0);
     }, []);
+
+    const dadosMunicipios = dadosPorMunicipio as Record<string, MunicipioData>;
+
+    const municipioSelecionado = useMemo(() => {
+        if (!selectedMunicipioId) {
+            return null;
+        }
+
+        const municipioData = dadosMunicipios[selectedMunicipioId];
+        if (!municipioData) {
+            return {
+                id: selectedMunicipioId,
+                nome: "Municipio nao encontrado",
+                anoData: null,
+            };
+        }
+
+        const anoKey = String(anoSelecionado);
+        const anoData = municipioData[anoKey] as AnoData | undefined;
+
+        return {
+            id: selectedMunicipioId,
+            nome: municipioData.NOME_MUNICIPIO,
+            anoData: anoData ?? null,
+        };
+    }, [anoSelecionado, dadosMunicipios, selectedMunicipioId]);
+
+    const escalaPorMunicipio = useMemo(() => {
+        const anoKey = String(anoSelecionado);
+        const escalaMap = new Map<string, string>();
+
+        municipios.forEach((municipio) => {
+            const municipioData = dadosMunicipios[municipio.id];
+            if (!municipioData) {
+                return;
+            }
+
+            const anoData = municipioData[anoKey] as AnoData | undefined;
+            const escala = anoData?.[incidenciaTipo]?.ESCALA;
+            if (escala) {
+                escalaMap.set(municipio.id, escala);
+            }
+        });
+
+        return escalaMap;
+    }, [anoSelecionado, dadosMunicipios, incidenciaTipo, municipios]);
 
     const bounds = useMemo(() => {
         let minLat = Infinity;
@@ -176,6 +243,19 @@ export default function Mapa() {
         setCanvasSize({ width, height });
     };
 
+    const getEscalaColor = (escala?: string) => {
+        if (!escala) {
+            return "#D8D3CA";
+        }
+
+        const escalaNormalizada = escala.toLowerCase();
+        if (escalaNormalizada === "baixa") return "#86BBD8";
+        if (escalaNormalizada === "media") return "#F4D8A7";
+        if (escalaNormalizada === "alta") return "#E38B4F";
+        if (escalaNormalizada === "muito alta") return "#C85B5B";
+        return "#D8D3CA";
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -183,9 +263,6 @@ export default function Mapa() {
                     <Text style={styles.backText}>← Voltar</Text>
                 </TouchableOpacity>
                 <Text style={styles.title}>Mapa do Maranhão</Text>
-                {selectedMunicipio && (
-                    <Text style={styles.subtitle}>{selectedMunicipio}</Text>
-                )}
             </View>
             <View style={styles.yearSelector}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.yearScrollContent}>
@@ -208,6 +285,25 @@ export default function Mapa() {
                     ))}
                 </ScrollView>
             </View>
+            <View style={styles.typeSelector}>
+                {(["Tegumentar", "Viceral"] as IncidenciaTipo[]).map((tipo) => (
+                    <TouchableOpacity
+                        key={tipo}
+                        style={[
+                            styles.typePill,
+                            incidenciaTipo === tipo && styles.typePillActive,
+                        ]}
+                        onPress={() => setIncidenciaTipo(tipo)}
+                    >
+                        <Text style={[
+                            styles.typePillText,
+                            incidenciaTipo === tipo && styles.typePillTextActive,
+                        ]}>
+                            {tipo}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
             <View style={styles.mapContainer} onLayout={handleCanvasLayout}>
                 <GestureDetector gesture={composed}>
                     <Animated.View style={[StyleSheet.absoluteFill, animatedStyle]}>
@@ -217,18 +313,70 @@ export default function Mapa() {
                                     key={municipio.id}
                                     d={municipio.pathData}
                                     fill={
-                                        selectedMunicipio === municipio.name
-                                            ? "rgba(244, 216, 167, 0.65)"
-                                            : "rgba(44, 95, 126, 0.30)"
+                                        selectedMunicipioId === municipio.id
+                                            ? "white"
+                                            : getEscalaColor(escalaPorMunicipio.get(municipio.id))
                                     }
-                                    stroke="#2C5F7E"
-                                    strokeWidth={0.8}
-                                    onPress={() => setSelectedMunicipio(municipio.name)}
+                                    stroke={selectedMunicipioId === municipio.id ? "#1C1C1C" : "#2C5F7E"}
+                                    strokeWidth={selectedMunicipioId === municipio.id ? 2.6 : 0.8}
+                                    onPress={() => setSelectedMunicipioId(municipio.id)}
                                 />
                             ))}
                         </Svg>
                     </Animated.View>
                 </GestureDetector>
+                <View style={styles.legendContainer}>
+                    <Text style={styles.legendTitle}>Legenda</Text>
+                    <View style={styles.legendRow}>
+                        <View style={[styles.legendSwatch, { backgroundColor: "#86BBD8" }]} />
+                        <Text style={styles.legendLabel}>Baixa</Text>
+                    </View>
+                    <View style={styles.legendRow}>
+                        <View style={[styles.legendSwatch, { backgroundColor: "#F4D8A7" }]} />
+                        <Text style={styles.legendLabel}>Media</Text>
+                    </View>
+                    <View style={styles.legendRow}>
+                        <View style={[styles.legendSwatch, { backgroundColor: "#E38B4F" }]} />
+                        <Text style={styles.legendLabel}>Alta</Text>
+                    </View>
+                    <View style={styles.legendRow}>
+                        <View style={[styles.legendSwatch, { backgroundColor: "#C85B5B" }]} />
+                        <Text style={styles.legendLabel}>Muito alta</Text>
+                    </View>
+                </View>
+            </View>
+            <View style={styles.infoPanel}>
+                {!municipioSelecionado && (
+                    <Text style={styles.infoHint}>Selecione um municipio para ver os dados.</Text>
+                )}
+                {municipioSelecionado && (
+                    <View style={styles.infoContent}>
+                        <View style={styles.infoHeaderRow}>
+                            <Text style={styles.infoTitle}>{municipioSelecionado.nome}</Text>
+                            <Text style={styles.infoYear}>Ano {anoSelecionado}</Text>
+                        </View>
+                        {municipioSelecionado.anoData ? (
+                            <View style={styles.infoGrid}>
+                                <View style={styles.infoCard}>
+                                    <Text style={styles.infoCardTitle}>Tegumentar</Text>
+                                    <Text style={styles.infoLine}>Casos: {municipioSelecionado.anoData.Tegumentar.CASOS}</Text>
+                                    <Text style={styles.infoLine}>Populacao: {municipioSelecionado.anoData.Tegumentar.POPULACAO}</Text>
+                                    <Text style={styles.infoLine}>Incidencia: {municipioSelecionado.anoData.Tegumentar.INCIDENCIA}</Text>
+                                    <Text style={styles.infoBadge}>{municipioSelecionado.anoData.Tegumentar.ESCALA}</Text>
+                                </View>
+                                <View style={styles.infoCard}>
+                                    <Text style={styles.infoCardTitle}>Viceral</Text>
+                                    <Text style={styles.infoLine}>Casos: {municipioSelecionado.anoData.Viceral.CASOS}</Text>
+                                    <Text style={styles.infoLine}>Populacao: {municipioSelecionado.anoData.Viceral.POPULACAO}</Text>
+                                    <Text style={styles.infoLine}>Incidencia: {municipioSelecionado.anoData.Viceral.INCIDENCIA}</Text>
+                                    <Text style={styles.infoBadge}>{municipioSelecionado.anoData.Viceral.ESCALA}</Text>
+                                </View>
+                            </View>
+                        ) : (
+                            <Text style={styles.infoHint}>Sem dados para este ano.</Text>
+                        )}
+                    </View>
+                )}
             </View>
         </View>
     );
@@ -241,8 +389,8 @@ const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: "#2C5F7E",
-        paddingTop: 60,
-        paddingBottom: 20,
+        paddingTop: 44,
+        paddingBottom: 14,
         paddingHorizontal: 20,
     },
     backButton: {
@@ -254,12 +402,12 @@ const styles = StyleSheet.create({
         fontWeight: "600",
     },
     title: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: "800",
         color: "#F4D8A7",
     },
     subtitle: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: "600",
         color: "#F4D8A7",
         marginTop: 5,
@@ -267,6 +415,140 @@ const styles = StyleSheet.create({
     mapContainer: {
         flex: 1,
         backgroundColor: "#ECE7DF",
+        overflow: "hidden",
+    },
+    typeSelector: {
+        flexDirection: "row",
+        gap: 10,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        backgroundColor: "#F5F2ED",
+        borderBottomWidth: 1,
+        borderBottomColor: "#DDD9D3",
+    },
+    typePill: {
+        paddingHorizontal: 16,
+        paddingVertical: 7,
+        borderRadius: 18,
+        borderWidth: 1.5,
+        borderColor: "#2C5F7E",
+        backgroundColor: "transparent",
+    },
+    typePillActive: {
+        backgroundColor: "#2C5F7E",
+    },
+    typePillText: {
+        fontSize: 13,
+        fontWeight: "700",
+        color: "#2C5F7E",
+    },
+    typePillTextActive: {
+        color: "#F4D8A7",
+    },
+    legendContainer: {
+        position: "absolute",
+        right: 14,
+        top: 14,
+        backgroundColor: "rgba(253, 251, 247, 0.92)",
+        borderRadius: 12,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        borderWidth: 1,
+        borderColor: "#E0DBD3",
+        gap: 6,
+    },
+    legendTitle: {
+        fontSize: 12,
+        fontWeight: "800",
+        color: "#2C5F7E",
+        marginBottom: 2,
+    },
+    legendRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
+    },
+    legendSwatch: {
+        width: 12,
+        height: 12,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: "#C8C2BA",
+    },
+    legendLabel: {
+        fontSize: 11,
+        fontWeight: "600",
+        color: "#4B5862",
+    },
+    infoPanel: {
+        backgroundColor: "#FDFBF7",
+        paddingHorizontal: 18,
+        paddingTop: 14,
+        paddingBottom: 18,
+        borderTopWidth: 1,
+        borderTopColor: "#DDD9D3",
+    },
+    infoContent: {
+        gap: 12,
+    },
+    infoHeaderRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 12,
+    },
+    infoTitle: {
+        fontSize: 18,
+        fontWeight: "800",
+        color: "#2C5F7E",
+        flex: 1,
+    },
+    infoYear: {
+        fontSize: 14,
+        fontWeight: "700",
+        color: "#6B7B86",
+    },
+    infoHint: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: "#6B7B86",
+        textAlign: "center",
+        paddingVertical: 8,
+    },
+    infoGrid: {
+        flexDirection: "row",
+        gap: 12,
+    },
+    infoCard: {
+        flex: 1,
+        backgroundColor: "#FFFFFF",
+        borderRadius: 12,
+        padding: 12,
+        borderWidth: 1,
+        borderColor: "#E6E1DA",
+    },
+    infoCardTitle: {
+        fontSize: 14,
+        fontWeight: "700",
+        color: "#2C5F7E",
+        marginBottom: 6,
+    },
+    infoLine: {
+        fontSize: 12,
+        fontWeight: "600",
+        color: "#4B5862",
+        marginBottom: 2,
+    },
+    infoBadge: {
+        marginTop: 6,
+        alignSelf: "flex-start",
+        backgroundColor: "#F4D8A7",
+        color: "#2C5F7E",
+        fontSize: 11,
+        fontWeight: "700",
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 999,
         overflow: "hidden",
     },
     yearSelector: {

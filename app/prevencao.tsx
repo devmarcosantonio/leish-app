@@ -38,9 +38,6 @@ export default function Prevencao() {
                         </View>
                     </View>
 
-
-
-
                     {/* Controle do Mosquito */}
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
@@ -77,9 +74,6 @@ export default function Prevencao() {
                                 />
                             </View>
                         </View>
-
-
-
 
 
                         {/* Uso de Inseticidas */}
